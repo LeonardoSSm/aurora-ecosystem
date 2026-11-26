@@ -10,4 +10,5 @@ export const projects: Project[] = [
   {name:"Aurora Lens",tag:"Captura",stage:"Planejado",symbol:"◉",description:"Conceito de captura e transmissão de conteúdo visual para integração com outras ferramentas."},
   {name:"Aurora Connect",tag:"Conectividade",stage:"Planejado",symbol:"⤧",description:"Conceito de integração entre computadores com compartilhamento de periféricos, clipboard e arquivos."},
   {name:"Aurora Studio",tag:"Criação",stage:"Planejado",symbol:"▱",description:"Conceito de ambiente para produção de conteúdo e fluxos criativos assistidos por inteligência artificial."},
+  {name:"Aurora Transcription",tag:"Conhecimento",stage:"Arquitetura",symbol:"≋",description:"Uma ferramenta para registrar ideias por voz, transcrever gravações e transformar pensamentos em conhecimento organizado."},
 ];
