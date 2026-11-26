@@ -5,17 +5,32 @@ function Core() {
     const z=r*Math.sin(a);
     return {x:300+r*Math.cos(a)*119,y:220+y*119,opacity:.28+(z+1)*.31,r:i%11===0?2:1};
   });
+  const orbits = [
+    {rx:254,ry:100,angle:-25,duration:19,phase:0},
+    {rx:244,ry:93,angle:28,duration:24,phase:7},
+    {rx:218,ry:68,angle:75,duration:16,phase:4},
+  ];
+  // Calculate the same rotated ellipse for both the visible track and its satellite.
+  function orbitPath(rx:number,ry:number,angle:number){
+    const a=angle*Math.PI/180, x=rx*Math.cos(a), y=rx*Math.sin(a);
+    return `M ${300+x} ${220+y} A ${rx} ${ry} ${angle} 0 1 ${300-x} ${220-y} A ${rx} ${ry} ${angle} 0 1 ${300+x} ${220+y}`;
+  }
   return <svg className="core" viewBox="0 0 600 440" role="img" aria-label="Núcleo Aurora com partículas e órbitas">
     <defs><radialGradient id="glow"><stop stopColor="#7159dc" stopOpacity=".27"/><stop offset="1" stopColor="#7159dc" stopOpacity="0"/></radialGradient></defs>
-    <circle cx="300" cy="220" r="205" fill="url(#glow)"/>
+    <circle className="core-glow" cx="300" cy="220" r="205" fill="url(#glow)"/>
     <g fill="none" stroke="#8c85d5" strokeWidth=".75" opacity=".45">
-      <ellipse cx="300" cy="220" rx="254" ry="100" transform="rotate(-25 300 220)"/>
-      <ellipse cx="300" cy="220" rx="244" ry="93" transform="rotate(28 300 220)"/>
-      <ellipse cx="300" cy="220" rx="218" ry="68" transform="rotate(75 300 220)"/>
-      {Array.from({length:7},(_,i)=><ellipse key={i} cx="300" cy="220" rx="119" ry={20+i*15} transform={`rotate(${i*26} 300 220)`}/>)}
+      {orbits.map((o,i)=><ellipse key={i} cx="300" cy="220" rx={o.rx} ry={o.ry} transform={`rotate(${o.angle} 300 220)`}/>)}
+      <g className="core-rings">
+        {Array.from({length:7},(_,i)=><ellipse key={i} cx="300" cy="220" rx="119" ry={20+i*15} transform={`rotate(${i*26} 300 220)`}/>)}
+      </g>
     </g>
-    <g fill="#c9c0ff">{points.map((p,i)=><circle key={i} cx={p.x} cy={p.y} r={p.r} opacity={p.opacity}/>)}</g>
-    <g fill="#f1edff">{[[92,325],[490,105],[520,305],[214,30],[356,417]].map(([x,y],i)=><circle key={i} cx={x} cy={y} r="3"/>)}</g>
+    <g className="core-particles" fill="#c9c0ff">{points.map((p,i)=><circle key={i} cx={p.x} cy={p.y} r={p.r} opacity={p.opacity}/>)}</g>
+    <g className="core-satellites" fill="#f1edff">
+      {orbits.flatMap((o,i)=>Array.from({length:i===2?1:2},(_,j)=><circle key={`${i}-${j}`} r="3">
+        <animateMotion path={orbitPath(o.rx,o.ry,o.angle)} dur={`${o.duration}s`} begin={`-${o.phase+j*o.duration/2}s`} repeatCount="indefinite"/>
+      </circle>))}
+    </g>
+    <g className="core-satellites-static" fill="#f1edff">{orbits.map((o,i)=><circle key={i} cx={300+o.rx*Math.cos(o.angle*Math.PI/180)} cy={220+o.rx*Math.sin(o.angle*Math.PI/180)} r="3"/>)}</g>
   </svg>;
 }
 export default function Home(){
